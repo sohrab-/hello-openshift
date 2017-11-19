@@ -29,12 +29,13 @@ function getState() {
   request
     .get(HEART_URL)
     .on('response', (response) => {
+      console.log(`Received status code: ${response.statusCode}`)
       if (response.statusCode < 400) {
         state = 'alive';
       }
     })
-    .on('error', () => {
-      // keep it dead
+    .on('error', (err) => {
+      console.log(err);
     });
   return state;
 }

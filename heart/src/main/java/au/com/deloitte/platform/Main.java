@@ -9,7 +9,7 @@ class Main {
 
     public static void main(String... args) {
         port(HTTP_PORT);
-        get("/", (request, response) -> "");
+        get("/", (request, response) -> "");    // return HTTP 200
     }
 
 }
