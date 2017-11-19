@@ -25,7 +25,8 @@ wss.on('connection', (ws) => {
 
 // get heart state via REST API
 function getState() {
-  var state = 'dead'
+  var state = 'dead';
+  console.log(`GET ${HEART_URL}...`);
   request
     .get(HEART_URL)
     .on('response', (response) => {
