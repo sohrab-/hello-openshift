@@ -23,27 +23,26 @@ wss.on('connection', (ws) => {
   ws.on('close', () => console.log('Client disconnected'));
 });
 
+function sendState(state) {
+  wss.clients.forEach((client) => {
+    client.send(state);
+  });
+}
+
 // get heart state via REST API
 function getState() {
-  var state = 'dead';
-  console.log(`GET ${HEART_URL}...`);
+  //console.log(`GET ${HEART_URL}...`);
   request
     .get(HEART_URL)
     .on('response', (response) => {
-      console.log(`Received status code: ${response.statusCode}`)
-      if (response.statusCode < 400) {
-        state = 'alive';
-      }
+      //console.log(`Received status code: ${response.statusCode}`);
+      sendState(response.statusCode < 400 ? 'alive' : 'dead');
     })
     .on('error', (err) => {
       console.log(err);
+      sendState('dead');
     });
-  return state;
 }
 
 // send state to all websocket clients every second
-setInterval(() => {
-  wss.clients.forEach((client) => {
-    client.send(getState());
-  });
-}, 1000);
+setInterval(getState, 1000);
