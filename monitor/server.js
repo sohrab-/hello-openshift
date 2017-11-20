@@ -8,7 +8,8 @@ const request = require('request');
 const PORT = process.env.PORT || 3000;
 const HEART_HOST = process.env.HEART_HTTP_HOST || 'heart';
 const HEART_PORT = process.env.HEART_HTTP_PORT || '8080';
-const HEART_URL = `http://${HEART_HOST}:${HEART_PORT}`
+const HEART_URL = `http://${HEART_HOST}:${HEART_PORT}`;
+const TIMEOUT = 2000;
 
 // setup web server
 const server = express()
@@ -33,9 +34,9 @@ function sendState(state) {
 function getState() {
   //console.log(`GET ${HEART_URL}...`);
   request
-    .get(HEART_URL)
+    .get(HEART_URL, { timeout: TIMEOUT })
     .on('response', (response) => {
-      //console.log(`Received status code: ${response.statusCode}`);
+      console.log(`Received status code: ${response.statusCode}`);
       sendState(response.statusCode < 400 ? 'alive' : 'dead');
     })
     .on('error', (err) => {
