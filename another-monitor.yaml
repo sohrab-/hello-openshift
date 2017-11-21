@@ -1,0 +1,119 @@
+apiVersion: v1
+kind: List
+items:
+
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: another-monitor
+    labels:
+      app: another-monitor
+
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    name: another-monitor
+    labels:
+      app: another-monitor
+  spec:
+    strategy:
+      sourceStrategy:
+        type: Source
+        from:
+          kind: ImageStreamTag
+          name: nodejs:6
+          namespace: openshift
+    source:
+      type: Git
+      git:
+        ref: master
+        uri: https://github.com/sohrab-/hello-openshift.git
+      contextDir: monitor
+    output:
+      to:
+        kind: ImageStreamTag
+        name: another-monitor:latest
+    runPolicy: Serial
+    triggers:
+    - type: ImageChange
+      imageChange: {}
+    - type: ConfigChange
+
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    name: another-monitor
+    labels:
+      app: another-monitor
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: another-monitor
+    strategy:
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          app: another-monitor
+          deploymentconfig: another-monitor
+      spec:
+        containers:
+        - name: another-monitor
+          image: another-monitor:latest
+          env:
+          - name: PORT
+            value: "8080"
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+    triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+        - another-monitor
+        from:
+          kind: ImageStreamTag
+          name: another-monitor:latest
+          namespace: disrupt
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: another-monitor
+    labels:
+      app: another-monitor
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      deploymentconfig: another-monitor
+    sessionAffinity: None
+    type: ClusterIP
+
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: another-monitor
+    labels:
+      app: another-monitor
+  spec:
+    port:
+      targetPort: 8080-tcp
+    to:
+      kind: Service
+      name: another-monitor
+      weight: 100
