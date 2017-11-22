@@ -85,7 +85,7 @@ items:
         from:
           kind: ImageStreamTag
           name: another-monitor:latest
-          namespace: disrupt
+          namespace: hello-openshift
 
 - apiVersion: v1
   kind: Service

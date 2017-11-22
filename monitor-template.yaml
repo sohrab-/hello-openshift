@@ -91,7 +91,7 @@ objects:
         from:
           kind: ImageStreamTag
           name: ${APP_NAME}:latest
-          namespace: disrupt
+          namespace: hello-openshift
 
 - apiVersion: v1
   kind: Service
