@@ -1,7 +1,7 @@
 Hello OpenShift
 ===
 
-This is an example to demonstrate build and deployment of container applications in [OpenShift Container Platform]().
+This is an example to demonstrate build and deployment of container applications in [OpenShift Container Platform](https://www.openshift.com).
 
 The application is made up of two pods:
 
