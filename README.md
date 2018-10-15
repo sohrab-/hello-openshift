@@ -8,7 +8,7 @@ The application is made up of two pods:
 * `heart`: A Java application that responds to HTTP requests on port 8080
 * `monitor`: A NodeJS application that consumes `heart`'s REST API and notifies the heart-monitor application in the browser using websockets.
 
-This has been tested on Red Hat CDK 3.2.0-1 (minishift v1.7.0+204ce19).
+This has been tested on Red Hat CDK 3.2.0-1 (minishift v1.7.0+204ce19) and CDK v3.6.0-1 (minishift v1.24.0+aa3dd4c).
 
 Setup
 ---
